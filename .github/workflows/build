@@ -1,0 +1,26 @@
+name: Build Docker image for gdrive-webdav
+
+on:
+  workflow_dispatch:   # allows manual run
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t gdrive-webdav .
+
+      - name: Save Docker image as artifact
+        run: docker save gdrive-webdav | gzip > gdrive-webdav.tar.gz
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdrive-webdav-image
+          path: gdrive-webdav.tar.gz
